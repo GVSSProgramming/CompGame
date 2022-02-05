@@ -32,7 +32,7 @@ const func = function (gameObj) {
     console.log(gameObj.getPlayer().getMoves());
     console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies()[0])}`);
     console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies()[0])}`);
-    console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 1, 10)}`);
+    console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 1, 5)}`);
    // }
 }
 const gameObj = new game("", func);

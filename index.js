@@ -6,92 +6,122 @@ class enemy {
         this.hp = hp;
     }
     reset(){
-        hp = 10000;                                                                                            
+        this.hp = 10000; //WOW??? 10/10 game design                                                                                         
     }
     damage(dmg) {
         this.hp -= dmg;
         return this.hp <= 0; //returns dead (true) false (alive)
     }
 }
+
 class player {
+    points;
     kills;
-    character;
-    onMoveFunc;
-    constructor(character, onMoveFunc) {
-        if (character == "shin") {
-            this.character = new shinSuzuma();
-        } else {
-            this.character = new HiroyasuKayama();
-        }
-        this.onMoveFunc = onMoveFunc;
+    moves;
+    constructor(){
+        this.kills = 0;
+        this.moves = 0;
+    } 
+    onKill(enemy){
+        this.kills += 1;
+        console.log("DEAD");
+        enemy.reset();
     }
-    onTurn() {
-        for (i = 0; i < 3; i++) {
-            onMoveFunc(gameObj, i);
-        }
+    getKills(){
+        return this.kills;
+    }
+    getMoves(){
+        return this.moves;
+    } 
+    getPoints(){
+        return this.points;
     }
 }
-
 
 //average spell = 10 points
 //high spell = 30 points
 //very high = 50 points
 
-class HiroyasuKayama {
-    points;
+class HiroyasuKayama extends player {
     constructor() {
-        points = 20;
+        super();
+        this.points = 20;
     }
     attack(enemy) { //Homing
-        enemy.damage(1000);
-        points += 10;
+        if (this.moves >= 3) return false;
+        if (enemy.damage(1000)) this.onKill(enemy);
+        this.points += 10;
+        this.moves += 1;
+        return true;
     }
-
-    spell(enemies, spell, cost) {
-        const rng = new Math.random();
-        let success = false;
-        for (i = 0; i < enemies.length; i++) {
+    castSpell(enemies, spell, cost) {//Arr of enemies, spell #, amount user is paying. returns 
+        const rng = Math.random();
+        let success = false; //bool if spell successfully hit
+        let kill = false; //bool if spell killed enemy     
+        let error = "SUCCESS";
+        if (this.moves >= 3) return [false,"Used up all moves"];
+        for (let i = 0; i < enemies.length; i++) {
             switch (spell) {
                 case 1: { //Fantasy Seal
                     if (cost / 10 > rng) {
-                        enemy[i].damage(1000);
+                        kill = enemies[i].damage(1000);
                         success = true;
+                    } else {
+                        error = "failed rng roll";
                     }
                 } break;
                 case 2: { //Fantasy Orb
                     if (enemies.length > 1) return false;
                     if (cost / 10 > rng) {
-                        enemy[i].damage(2000);
+                        kill = enemies[i].damage(2000);
                         success = true;
+                    } else {
+                        error = "failed rng roll";
                     }
                 } break;
                 case 3: {//Fantasy Nature
                     if (cost / 50 > rng) {
-                        enemy[i].damage(9999);
+                        kill = enemies[i].damage(9999);
                         success = true;
+                    } else {
+                        error = "failed rng roll";
                     }
                 } break;
+                default:
+                    error = "spell value out of bounds"
             }
+            if (kill) this.onKill(enemies[i]); //if spell killed the enemy
         }
-        points -= cost;
-        return success;
+        this.points -= cost;
+        this.moves += 1;
+        return [success,error];
     }
 
 }
-class shinSuzuma {
-    points;
+class shinSuzuma extends player {
     constructor() {
-        points = 40;
+        super();
+        this.points = 40;
     }
-    attack(enemies) {//Illusion Beams
-        enemies[0].damage(500);
-        enemies[1].damage(500);
-        points += 5;
+    attack(enemies) { //Illusion Beams
+        if (this.moves >= 3) return false;
+        if (enemies.length != 2) return false;
+        for (let i = 0; i < enemies.length; i++){
+            if (enemies[i].damage(500)) {
+                this.onKill(enemies[i]);
+            }
+            //console.log(`ENEMY ${i}: ${enemies[i].hp}`)
+        }
+        
+        this.points += 5;
+        this.moves += 1;
+        return true;
     }
 
-    spell(enemies, spell, cost) {
+    castSpell(enemies, spell, cost) {
         const rng = new Math.random();
         let success = false;
+        if (this.moves >= 3) return false;
         for (i = 0; i < enemies.length; i++) {
             switch (spell) {
                 case 1: { //Master Spark
@@ -114,8 +144,10 @@ class shinSuzuma {
                     }
                 } break;
             }
+            if (kill) this.onKill(enemies[i]); //if spell killed the enemy
         }
-        points -= cost;
+        this.points -= cost;
+        this.moves += 1;
         return success;
     }
 
@@ -123,30 +155,44 @@ class shinSuzuma {
 
 
 class game {
-    #enemies = [];
-    #player;
-    constructor(character, func) {
-        this.#player = new player(character, func);
+    enemies = [];
+    player;
+    onTurnFunc;
+    constructor(character, onTurnFunc) {
+        if (character == "shin"){
+            this.player = new shinSuzuma();
+        } else {
+            this.player = new HiroyasuKayama();
+        }
+        this.onTurnFunc = onTurnFunc;
     }
     start() {
-        this.#enemies.enemy1 = new enemy("JB", 10000);
-        this.#enemies.enemy2 = new enemy("EL", 10000);
-        for (i = 0; i < 100; i++) {
-            this.player.onTurn(func);
+        this.enemies[0] = new enemy("JB", 10000);
+        this.enemies[1] = new enemy("EL", 10000);
+        for (let i = 0; i < 100; i++) {
+            console.log(`turn ${i}`);
+            this.player.moves = 0;
+            this.onTurnFunc(this);
         }
     }
     getPlayer(){
-        return this.#player
+        return this.player
     }
     getEnemies(){
-        return this.#enemies
+        return this.enemies
     }
 }
 
-const func = function (gameObj, actions) {
 
+
+const func = function (gameObj) {
+    //for (let i = 0; i < 2; i++){
+    console.log(gameObj.getPlayer().getMoves());
+    console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies()[0])}`);
+    console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies()[0])}`);
+    console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 1, 10)}`);
+   // }
 }
+const gameObj = new game("", func);
+gameObj.start();    
 
-
-const gameObj = new game("shin", func1);
-gameObj.start();

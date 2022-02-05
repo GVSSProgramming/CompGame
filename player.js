@@ -38,15 +38,18 @@ class HiroyasuKayama extends player {
         this.moves += 1;
         return true;
     }
-    castSpell(enemies, spell, cost) {//Arr of enemies, spell #, amount user is paying. returns 
+    castSpell(spell, cost, enemies) {// spell #, amount user is paying, Arr of enemies. returns 
         const rng = Math.random();
         let success = false; //bool if spell successfully hit
         let kill = false; //bool if spell killed enemy     
         let error = "SUCCESS";
         if (this.moves >= 3) return [false,"Used up all moves"];
+        if (this.points < cost) return [false, "Insufficient points"];
+
         for (let i = 0; i < enemies.length; i++) {
             switch (spell) {
                 case 1: { //Fantasy Seal
+                    if (enemies.length != 2) error = "This spell deals damage to 2 enemies"
                     if (cost / 10 > rng) {
                         kill = enemies[i].damage(1000);
                         success = true;
@@ -55,7 +58,7 @@ class HiroyasuKayama extends player {
                     }
                 } break;
                 case 2: { //Fantasy Orb
-                    if (enemies.length > 1) return false;
+                    if (enemies.length != 1) error = "This spell deals damage to only 1 enemy";
                     if (cost / 10 > rng) {
                         kill = enemies[i].damage(2000);
                         success = true;
@@ -64,6 +67,7 @@ class HiroyasuKayama extends player {
                     }
                 } break;
                 case 3: {//Fantasy Nature
+                    if (enemies.length != 1) error = "This spell deals damage to only 1 enemy";
                     if (cost / 50 > rng) {
                         kill = enemies[i].damage(9999);
                         success = true;

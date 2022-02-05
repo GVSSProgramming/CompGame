@@ -27,9 +27,14 @@ class game {
     }
 }
 const func = function (gameObj) {
+    //for (let i = 0; i < 2; i++){
+        console.log(gameObj.getPlayer().getMoves());
+        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
+        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
+        console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 2, 30)}`);
+       // }
 
-    //console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 2, 10)}`);
 }
-const gameObj = new game("", func);
+const gameObj = new game("shin", func);
 gameObj.start();
 

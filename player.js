@@ -33,13 +33,13 @@ class HiroyasuKayama extends player {
     }
     attack(enemy) { //Homing
         if (this.moves >= 3) return false;
-        if (enemy.damage(1000)) this.onKill(enemy);
+        if (enemy[0].damage(1000)) this.onKill(enemy[0]);
         this.points += 10;
         this.moves += 1;
         return true;
     }
     castSpell(spell, cost, enemies) {// spell #, amount user is paying, Arr of enemies. returns 
-        const rng = Math.random();
+        const rng = Math.random() ** 2;
         let success = false; //bool if spell successfully hit
         let kill = false; //bool if spell killed enemy     
         let error = "SUCCESS";
@@ -76,7 +76,7 @@ class HiroyasuKayama extends player {
                     }
                 } break;
                 default:
-                    error = "spell value out of bounds"
+                    return [false, "Spell value out of bounds" ]
             }
             if (kill) this.onKill(enemies[i]); //if spell killed the enemy
         }
@@ -105,8 +105,8 @@ class shinSuzuma extends player {
         return true;
     }
 
-    castSpell(enemies, spell, cost) {
-        const rng = Math.random();
+    castSpell(spell, cost, enemies) {
+        const rng =  Math.random() ** 2;
         let success = false;
         let kill = false; //bool if spell killed enemy     
         let error = "SUCCESS";
@@ -142,7 +142,7 @@ class shinSuzuma extends player {
                     }
                 } break;
                 default:
-                    error = "spell value out of bounds"
+                    return [false, "Spell value out of bounds" ]
             }
             if (kill) this.onKill(enemies[i]); //if spell killed the enemy
         }

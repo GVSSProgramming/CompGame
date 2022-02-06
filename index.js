@@ -3,7 +3,7 @@ class game {
     player;
     onTurnFunc;
     constructor(character, onTurnFunc) {
-        if (character == "shin"){
+        if (character == "shin") {
             this.player = new shinSuzuma();
         } else {
             this.player = new HiroyasuKayama();
@@ -19,22 +19,22 @@ class game {
             this.onTurnFunc(this);
         }
     }
-    getPlayer(){
+    getPlayer() {
         return this.player
     }
-    getEnemies(){
+    getEnemies() {
         return this.enemies
     }
 }
-
 const func = function (gameObj) {
     //for (let i = 0; i < 2; i++){
-    console.log(gameObj.getPlayer().getMoves());
-    console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies()[0])}`);
-    console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies()[0])}`);
-    console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 1, 10)}`);
-   // }
+        console.log(gameObj.getPlayer().getMoves());
+        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
+        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
+        console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 2, 30)}`);
+       // }
+
 }
-const gameObj = new game("", func);
-gameObj.start();    
+const gameObj = new game("shin", func);
+gameObj.start();
 

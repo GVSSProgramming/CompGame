@@ -11,8 +11,8 @@ class game {
         this.onTurnFunc = onTurnFunc;
     }
     start() {
-        this.enemies[0] = new enemy("JB", 10000);
-        this.enemies[1] = new enemy("EL", 10000);
+        this.enemies[0] = new enemy();
+        this.enemies[1] = new enemy();
         for (let i = 0; i < 100; i++) {
             console.log(`turn ${i}`);
             this.player.moves = 0;
@@ -20,10 +20,10 @@ class game {
         }
     }
     getPlayer() {
-        return this.player
+        return this.player;
     }
     getEnemies() {
-        return this.enemies
+        return this.enemies;
     }
 }
 const func = function (gameObj) {
@@ -31,7 +31,8 @@ const func = function (gameObj) {
         console.log(gameObj.getPlayer().getMoves());
         console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
         console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
-        console.log(`Spell: ${gameObj.getPlayer().castSpell([gameObj.getEnemies()[0]], 2, 30)}`);
+        console.log(`Spell: ${gameObj.getPlayer().castSpell(3, 25, gameObj.getEnemies())}`);
+        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
        // }
 
 }

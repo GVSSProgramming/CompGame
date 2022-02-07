@@ -2,14 +2,30 @@ class player {
     points;
     kills;
     moves;
+    inventory;
+    equipment
     constructor(){
         this.kills = 0;
         this.moves = 0;
+        this.inventory = [];
+        this.equipment = ["","","","","",""];
     } 
     onKill(enemy){
         this.kills += 1;
         console.log("DEAD");
+        switch (enemy.getName()){
+            case "Goblin": {
+                this.inventory.push('syringe');
+            } break;
+            case "Giant": {
+                this.inventory.push('piggybank');
+            } break;
+            case "Dragon": {
+                this.inventory.push('band');
+            } break;
+        }
         enemy.reset();
+        
     }
     getKills(){
         return this.kills;
@@ -19,6 +35,9 @@ class player {
     } 
     getPoints(){
         return this.points;
+    }
+    getInventory(){
+        return this.inventory;
     }
 }
 

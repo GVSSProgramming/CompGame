@@ -27,6 +27,18 @@ class player {
         enemy.reset();
         
     }
+
+    equip(invNum, equipNum) {
+        if (0 > equipNum > 6) return [false, "equipment # out of bounds"];
+        if(typeof this.inventory[invNum] !== 'undefined') {
+            this.equipment[equipNum] = this.inventory[invNum];
+            this.inventory.splice(invNum, 1);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     getKills(){
         return this.kills;
     }
@@ -38,6 +50,9 @@ class player {
     }
     getInventory(){
         return this.inventory;
+    }
+    getEquipment(){
+        return this.equipment;
     }
 }
 
@@ -110,6 +125,8 @@ class shinSuzuma extends player {
         super();
         this.points = 40;
     }
+
+
     attack(enemies) { //Illusion Beams
         if (this.moves >= 3) return false;
         if (enemies.length != 2) return false;

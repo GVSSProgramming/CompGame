@@ -2,14 +2,56 @@ class player {
     points;
     kills;
     moves;
+    inventory;
+    equipment
     constructor(){
         this.kills = 0;
         this.moves = 0;
+        this.inventory = [];        
+        this.equipment = ["","","","","",""];
     } 
     onKill(enemy){
         this.kills += 1;
         console.log("DEAD");
+        switch (enemy.getName()){
+            case "Goblin": {
+                this.inventory.push('syringe');
+            } break;
+            case "Giant": {
+                this.inventory.push('piggybank');
+            } break;
+            case "Dragon": {
+                this.inventory.push('band');
+            } break;
+        }
         enemy.reset();
+        
+    }
+
+    equip(invNum, equipNum) {
+        if (equipNum > 6 && equipNum < 0) return [false, "equipment # out of bounds"];
+        if(typeof this.inventory[invNum] !== 'undefined') {
+            if (this.equipment[equipNum] !== "")
+                this.inventory.push(this.equipment[equipNum])
+            this.equipment[equipNum] = this.inventory[invNum];
+            this.inventory.splice(invNum, 1);
+            return true;
+        }
+        else {
+            return [false, "inventory slot is undefined"];
+        }
+    }
+    
+    unequip(equipNum){
+        if (equipNum > 6 || equipNum < 0) return [false, "equipment # out of bounds"];
+        if (this.equipment[equipNum] !== "") {
+            this.inventory.push(this.equipment[equipNum]);
+            this.equipment[equipNum] = "";
+            return true;
+        }
+        else {
+            return [false, "inventory slot is undefined"];
+        }
     }
     getKills(){
         return this.kills;
@@ -19,6 +61,12 @@ class player {
     } 
     getPoints(){
         return this.points;
+    }
+    getInventory(){
+        return this.inventory;
+    }
+    getEquipment(){
+        return this.equipment;
     }
 }
 
@@ -41,7 +89,7 @@ class HiroyasuKayama extends player {
     castSpell(spell, cost, enemies) {// spell #, amount user is paying, Arr of enemies. returns 
         const rng = Math.random() ** 2;
         let success = false; //bool if spell successfully hit
-        let kill = false; //bool if spell killed enemy     
+        let kill = false; //bool if spll killed enemy     
         let error = "SUCCESS";
         if (this.moves >= 3) return [false,"Used up all moves"];
         if (this.points < cost) return [false, "Insufficient points"];
@@ -49,7 +97,7 @@ class HiroyasuKayama extends player {
         for (let i = 0; i < enemies.length; i++) {
             switch (spell) {
                 case 1: { //Fantasy Seal
-                    if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies" ]
+                    if (enemies.length != 2) return [false, "This spell dealse damage to only 2 enemies" ]
                     if (cost / 10 > rng) {
                         kill = enemies[i].damage(1000);
                         success = true;
@@ -91,6 +139,8 @@ class shinSuzuma extends player {
         super();
         this.points = 40;
     }
+
+
     attack(enemies) { //Illusion Beams
         if (this.moves >= 3) return false;
         if (enemies.length != 2) return false;

@@ -8,8 +8,9 @@ class enemy {
         return this.name;
     }
     getHp(){
-        return this.hp
+        return this.hp;
     }
+
     reset(){
         this.hp = 10000; //WOW??? 10/10 game design    
         let rng = Math.random();

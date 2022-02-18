@@ -3,10 +3,12 @@ class player {
     kills;
     moves;
     inventory;
-    equipment
+    equipment;
+    multiplier;
     constructor(){
         this.kills = 0;
         this.moves = 0;
+        this.multiplier = 1;
         this.inventory = [];        
         this.equipment = ["","","","","",""];
     } 
@@ -15,7 +17,7 @@ class player {
         console.log("DEAD");
         switch (enemy.getName()){
             case "Goblin": {
-                this.inventory.push('syringe');
+                this.inventory.push('syringe'); //10% more dmg
             } break;
             case "Giant": {
                 this.inventory.push('piggybank');
@@ -29,12 +31,22 @@ class player {
     }
 
     equip(invNum, equipNum) {
-        if (equipNum > 6 && equipNum < 0) return [false, "equipment # out of bounds"];
-        if(typeof this.inventory[invNum] !== 'undefined') {
+        if (this.moves >= 3) return [false, "used up all moves"];
+        if (equipNum > 6 && equipNum < 0 || typeof equipNum == 'undefined') return [false, "equipment # out of bounds"];
+        if (typeof this.inventory[invNum] !== 'undefined') {
             if (this.equipment[equipNum] !== "")
                 this.inventory.push(this.equipment[equipNum])
             this.equipment[equipNum] = this.inventory[invNum];
             this.inventory.splice(invNum, 1);
+            switch(this.equipment[equipNum]){
+                case "syringe": {
+                    this.multiplier += 0.1; 
+                } break;
+            }
+            if (this.equipment[equipNum] == "syringe") {
+                this.multiplier += 0.1; 
+            }
+            this.moves += 1;
             return true;
         }
         else {
@@ -46,6 +58,11 @@ class player {
         if (equipNum > 6 || equipNum < 0) return [false, "equipment # out of bounds"];
         if (this.equipment[equipNum] !== "") {
             this.inventory.push(this.equipment[equipNum]);
+            switch(this.equipment[equipNum]){
+                case "syringe": {
+                    this.multiplier -= 0.1; 
+                } break;
+            }
             this.equipment[equipNum] = "";
             return true;
         }
@@ -68,6 +85,9 @@ class player {
     getEquipment(){
         return this.equipment;
     }
+    getMultiplier(){
+        return this.multiplier;
+    }
 }
 
 //average spell = 10 points
@@ -80,8 +100,8 @@ class HiroyasuKayama extends player {
         this.points = 20;
     }
     attack(enemy) { //Homing
-        if (this.moves >= 3) return false;
-        if (enemy[0].damage(1000)) this.onKill(enemy[0]);
+        if (this.moves >= 3) return [false, "used up all moves"];
+        if (enemy[0].damage(this.multiplier*1000)) this.onKill(enemy[0]);
         this.points += 10;
         this.moves += 1;
         return true;
@@ -99,7 +119,7 @@ class HiroyasuKayama extends player {
                 case 1: { //Fantasy Seal
                     if (enemies.length != 2) return [false, "This spell dealse damage to only 2 enemies" ]
                     if (cost / 10 > rng) {
-                        kill = enemies[i].damage(1000);
+                        kill = enemies[i].damage(this.multiplier*1000);
                         success = true;
                     } else {
                         error = "failed rng roll";
@@ -108,7 +128,7 @@ class HiroyasuKayama extends player {
                 case 2: { //Fantasy Orb
                     if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy" ]
                     if (cost / 10 > rng) {
-                        kill = enemies[i].damage(2000);
+                        kill = enemies[i].damage(this.multiplier*2000);
                         success = true;
                     } else {
                         error = "failed rng roll";
@@ -117,7 +137,7 @@ class HiroyasuKayama extends player {
                 case 3: {//Fantasy Nature
                     if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy" ]
                     if (cost / 50 > rng) {
-                        kill = enemies[i].damage(9999);
+                        kill = enemies[i].damage(this.multiplier*9999);
                         success = true;
                     } else {
                         error = "failed rng roll";
@@ -145,7 +165,7 @@ class shinSuzuma extends player {
         if (this.moves >= 3) return false;
         if (enemies.length != 2) return false;
         for (let i = 0; i < enemies.length; i++){
-            if (enemies[i].damage(500)) {
+            if (enemies[i].damage(this.multiplier*500)) {
                 this.onKill(enemies[i]);
             }
         }
@@ -167,7 +187,7 @@ class shinSuzuma extends player {
                 case 1: { //Master Spark
                     if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy" ]
                     if (cost / 30 > rng) {
-                        kill = enemies[i].damage(3000);
+                        kill = enemies[i].damage(this.multiplier*3000);
                         success = true;
                     } else {
                         error = "failed rng roll";
@@ -176,7 +196,7 @@ class shinSuzuma extends player {
                 case 2: {//Blazing Star
                     if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies" ]
                     if (cost / 30 > rng) {
-                        kill = enemies[i].damage(2000);
+                        kill = enemies[i].damage(this.multiplier*2000);
                         success = true;
                     }else {
                         error = "failed rng roll";
@@ -185,7 +205,7 @@ class shinSuzuma extends player {
                 case 3: {//Final Spark
                     if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies" ]
                     if (cost / 50 > rng) {
-                        kill = enemies[i].damage(4999);
+                        kill = enemies[i].damage(this.multiplier*4999);
                         success = true;
                     } else {
                         error = "failed rng roll";

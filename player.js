@@ -5,29 +5,53 @@ class player {
     inventory;
     equipment;
     multiplier;
-    constructor(){
+    constructor() {
         this.kills = 0;
         this.moves = 0;
         this.multiplier = 1;
-        this.inventory = [];        
-        this.equipment = ["","","","","",""];
-    } 
-    onKill(enemy){
+        this.inventory = [];
+        this.equipment = ["", "", "", "", "", ""];
+    }
+    onTurn() {
+        this.multiplier = 1
+        this.moves = 0;
+
+
+        if (typeof this.kills % 5 == 0) { //if divisible by 5
+            for (let i = 0; i < this.equipment.length; i++) {
+                if (this.equipment[i] === "glass") {
+                    this.multiplier += 0.25;
+                }
+            }
+            //Im only putting this in here because bill told me to vvvv
+            if (typeof this.kills % 10 == 0) { //if divisible by 10 
+                for (let i = 0; i < this.equipment.length; i++) {
+                    if (this.equipment[i] === "tooth") {
+                        this.multiplier += 1;
+                    }
+                }
+            }
+        }
+        if (this.equipment.includes('syringe')) {
+            this.multiplier += 0.1;
+        }
+    }
+    onKill(enemy) {
         this.kills += 1;
         console.log("DEAD");
-        switch (enemy.getName()){
+        switch (enemy.getName()) {
             case "Goblin": {
                 this.inventory.push('syringe'); //10% more dmg
             } break;
             case "Giant": {
-                this.inventory.push('piggybank');
+                this.inventory.push('glass'); //get a damage multiplier if # of kills are divisible by 5. +25% per stack
             } break;
             case "Dragon": {
-                this.inventory.push('band');
+                this.inventory.push('tooth');//get a damage multiplier if # of kills are divisible by 10. +100% per stack
             } break;
         }
         enemy.reset();
-        
+
     }
 
     equip(invNum, equipNum) {
@@ -38,13 +62,13 @@ class player {
                 this.inventory.push(this.equipment[equipNum])
             this.equipment[equipNum] = this.inventory[invNum];
             this.inventory.splice(invNum, 1);
-            switch(this.equipment[equipNum]){
+            switch (this.equipment[equipNum]) {
                 case "syringe": {
-                    this.multiplier += 0.1; 
+                    this.multiplier += 0.1;
                 } break;
             }
             if (this.equipment[equipNum] == "syringe") {
-                this.multiplier += 0.1; 
+                this.multiplier += 0.1;
             }
             this.moves += 1;
             return true;
@@ -53,14 +77,14 @@ class player {
             return [false, "inventory slot is undefined"];
         }
     }
-    
-    unequip(equipNum){
+
+    unequip(equipNum) {
         if (equipNum > 6 || equipNum < 0) return [false, "equipment # out of bounds"];
         if (this.equipment[equipNum] !== "") {
             this.inventory.push(this.equipment[equipNum]);
-            switch(this.equipment[equipNum]){
+            switch (this.equipment[equipNum]) {
                 case "syringe": {
-                    this.multiplier -= 0.1; 
+                    this.multiplier -= 0.1;
                 } break;
             }
             this.equipment[equipNum] = "";
@@ -70,22 +94,22 @@ class player {
             return [false, "inventory slot is undefined"];
         }
     }
-    getKills(){
+    getKills() {
         return this.kills;
     }
-    getMoves(){
+    getMoves() {
         return this.moves;
-    } 
-    getPoints(){
+    }
+    getPoints() {
         return this.points;
     }
-    getInventory(){
+    getInventory() {
         return this.inventory;
     }
-    getEquipment(){
+    getEquipment() {
         return this.equipment;
     }
-    getMultiplier(){
+    getMultiplier() {
         return this.multiplier;
     }
 }
@@ -101,7 +125,7 @@ class HiroyasuKayama extends player {
     }
     attack(enemy) { //Homing
         if (this.moves >= 3) return [false, "used up all moves"];
-        if (enemy[0].damage(this.multiplier*1000)) this.onKill(enemy[0]);
+        if (enemy[0].damage(this.multiplier * 1000)) this.onKill(enemy[0]);
         this.points += 10;
         this.moves += 1;
         return true;
@@ -111,46 +135,46 @@ class HiroyasuKayama extends player {
         let success = false; //bool if spell successfully hit
         let kill = false; //bool if spll killed enemy     
         let error = "SUCCESS";
-        if (this.moves >= 3) return [false,"Used up all moves"];
+        if (this.moves >= 3) return [false, "Used up all moves"];
         if (this.points < cost) return [false, "Insufficient points"];
 
         for (let i = 0; i < enemies.length; i++) {
             switch (spell) {
                 case 1: { //Fantasy Seal
-                    if (enemies.length != 2) return [false, "This spell dealse damage to only 2 enemies" ]
+                    if (enemies.length != 2) return [false, "This spell dealse damage to only 2 enemies"]
                     if (cost / 10 > rng) {
-                        kill = enemies[i].damage(this.multiplier*1000);
+                        kill = enemies[i].damage(this.multiplier * 1000);
                         success = true;
                     } else {
                         error = "failed rng roll";
                     }
                 } break;
                 case 2: { //Fantasy Orb
-                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy" ]
+                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy"]
                     if (cost / 10 > rng) {
-                        kill = enemies[i].damage(this.multiplier*2000);
+                        kill = enemies[i].damage(this.multiplier * 2000);
                         success = true;
                     } else {
                         error = "failed rng roll";
                     }
                 } break;
                 case 3: {//Fantasy Nature
-                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy" ]
+                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy"]
                     if (cost / 50 > rng) {
-                        kill = enemies[i].damage(this.multiplier*9999);
+                        kill = enemies[i].damage(this.multiplier * 9999);
                         success = true;
                     } else {
                         error = "failed rng roll";
                     }
                 } break;
                 default:
-                    return [false, "Spell value out of bounds" ]
+                    return [false, "Spell value out of bounds"]
             }
             if (kill) this.onKill(enemies[i]); //if spell killed the enemy
         }
         this.points -= cost;
         this.moves += 1;
-        return [success,error]; // 10/10 error handler (ABOMINATION)
+        return [success, error]; // 10/10 error handler (ABOMINATION)
     }
 
 }
@@ -164,55 +188,55 @@ class shinSuzuma extends player {
     attack(enemies) { //Illusion Beams
         if (this.moves >= 3) return false;
         if (enemies.length != 2) return false;
-        for (let i = 0; i < enemies.length; i++){
-            if (enemies[i].damage(this.multiplier*500)) {
+        for (let i = 0; i < enemies.length; i++) {
+            if (enemies[i].damage(this.multiplier * 500)) {
                 this.onKill(enemies[i]);
             }
         }
-        
+
         this.points += 5;
         this.moves += 1;
         return true;
     }
 
     castSpell(spell, cost, enemies) {
-        const rng =  Math.random() ** 2;
+        const rng = Math.random() ** 2;
         let success = false;
         let kill = false; //bool if spell killed enemy     
         let error = "SUCCESS";
-        if (this.moves >= 3) return [false,"Used up all moves"];
+        if (this.moves >= 3) return [false, "Used up all moves"];
         if (this.points < cost) return [false, "Insufficient points"];
         for (let i = 0; i < enemies.length; i++) {
             switch (spell) {
                 case 1: { //Master Spark
-                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy" ]
+                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy"]
                     if (cost / 30 > rng) {
-                        kill = enemies[i].damage(this.multiplier*3000);
+                        kill = enemies[i].damage(this.multiplier * 3000);
                         success = true;
                     } else {
                         error = "failed rng roll";
                     }
                 } break;
                 case 2: {//Blazing Star
-                    if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies" ]
+                    if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies"]
                     if (cost / 30 > rng) {
-                        kill = enemies[i].damage(this.multiplier*2000);
+                        kill = enemies[i].damage(this.multiplier * 2000);
                         success = true;
-                    }else {
+                    } else {
                         error = "failed rng roll";
                     }
                 } break;
                 case 3: {//Final Spark
-                    if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies" ]
+                    if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies"]
                     if (cost / 50 > rng) {
-                        kill = enemies[i].damage(this.multiplier*4999);
+                        kill = enemies[i].damage(this.multiplier * 4999);
                         success = true;
                     } else {
                         error = "failed rng roll";
                     }
                 } break;
                 default:
-                    return [false, "Spell value out of bounds" ]
+                    return [false, "Spell value out of bounds"]
             }
             if (kill) this.onKill(enemies[i]); //if spell killed the enemy
         }

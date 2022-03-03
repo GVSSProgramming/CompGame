@@ -15,7 +15,7 @@ class game {
         this.enemies[1] = new enemy();
         for (let i = 0; i < 100; i++) {
             console.log(`turn ${i}`);
-            this.player.moves = 0;
+            this.player.onTurn();
             this.onTurnFunc(this);
         }
     }

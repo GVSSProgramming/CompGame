@@ -128,7 +128,7 @@ class HiroyasuKayama extends player {
         if (enemy[0].damage(this.multiplier * 1000)) this.onKill(enemy[0]);
         this.points += 10;
         this.moves += 1;
-        return true;
+        return [true, "SUCCESS"];
     }
     castSpell(spell, cost, enemies) {// spell #, amount user is paying, Arr of enemies. returns 
         const rng = Math.random() ** 2;
@@ -186,8 +186,8 @@ class shinSuzuma extends player {
 
 
     attack(enemies) { //Illusion Beams
-        if (this.moves >= 3) return false;
-        if (enemies.length != 2) return false;
+        if (this.moves >= 3) return [false, "used up all moves"];
+        if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies"];
         for (let i = 0; i < enemies.length; i++) {
             if (enemies[i].damage(this.multiplier * 500)) {
                 this.onKill(enemies[i]);
@@ -196,7 +196,7 @@ class shinSuzuma extends player {
 
         this.points += 5;
         this.moves += 1;
-        return true;
+        return [true, "SUCCESS"];
     }
 
     castSpell(spell, cost, enemies) {
@@ -209,7 +209,7 @@ class shinSuzuma extends player {
         for (let i = 0; i < enemies.length; i++) {
             switch (spell) {
                 case 1: { //Master Spark
-                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy"]
+                    if (enemies.length != 1) return [false, "This spell deals damage to only 1 enemy"];
                     if (cost / 30 > rng) {
                         kill = enemies[i].damage(this.multiplier * 3000);
                         success = true;
@@ -218,7 +218,7 @@ class shinSuzuma extends player {
                     }
                 } break;
                 case 2: {//Blazing Star
-                    if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies"]
+                    if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies"];
                     if (cost / 30 > rng) {
                         kill = enemies[i].damage(this.multiplier * 2000);
                         success = true;

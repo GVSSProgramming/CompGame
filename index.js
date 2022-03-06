@@ -2,6 +2,7 @@ class game {
     enemies = [];
     player;
     onTurnFunc;
+    turn;
     constructor(character, onTurnFunc) {
         if (character == "shin") {
             this.player = new shinSuzuma();
@@ -13,8 +14,7 @@ class game {
     start() {
         this.enemies[0] = new enemy();
         this.enemies[1] = new enemy();
-        for (let i = 0; i < 100; i++) {
-            console.log(`turn ${i}`);
+        for (this.turn = 0; this.turn < 100; this.turn++) {
             this.player.onTurn();
             this.onTurnFunc(this);
         }
@@ -25,17 +25,13 @@ class game {
     getEnemies() {
         return this.enemies;
     }
+    getTurn() {
+        return this.turn;
+    }
 }
 const func = function (gameObj) {
-    //for (let i = 0; i < 2; i++){
-        console.log(gameObj.getPlayer().getMoves());
-        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
-        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
-        console.log(`Spell: ${gameObj.getPlayer().castSpell(3, 25, gameObj.getEnemies())}`);
-        console.log(`Attack: ${gameObj.getPlayer().attack(gameObj.getEnemies())}`);
-       // }
-
+ //YOUR CODE GOES HERE
 }
-const gameObj = new game("shin", func);
-gameObj.start();
 
+const gameObj = new game("shin", func); //Replace "shin" with "hiroyasu" for hiroyasu mode
+gameObj.start();

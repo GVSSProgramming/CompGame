@@ -3,36 +3,36 @@ class player {
     kills;
     moves;
     inventory;
-    equipment;
+    items;
     multiplier;
     constructor() {
         this.kills = 0;
         this.moves = 0;
         this.multiplier = 1;
         this.inventory = [];
-        this.equipment = ["", "", "", "", "", ""];
+        this.items = ["", "", "", "", "", ""];
     }
     onTurn() {
         this.multiplier = 1
         this.moves = 0;
-
+        this.points += 5;
 
         if (typeof this.kills % 5 == 0) { //if divisible by 5
-            for (let i = 0; i < this.equipment.length; i++) {
-                if (this.equipment[i] === "glass") {
+            for (let i = 0; i < this.items.length; i++) {
+                if (this.items[i] === "glass") {
                     this.multiplier += 0.25;
                 }
             }
             //Im only putting this in here because bill told me to vvvv
             if (typeof this.kills % 10 == 0) { //if divisible by 10 
-                for (let i = 0; i < this.equipment.length; i++) {
-                    if (this.equipment[i] === "tooth") {
+                for (let i = 0; i < this.items.length; i++) {
+                    if (this.items[i] === "tooth") {
                         this.multiplier += 1;
                     }
                 }
             }
         }
-        if (this.equipment.includes('syringe')) {
+        if (this.items.includes('syringe')) {
             this.multiplier += 0.1;
         }
     }
@@ -51,27 +51,18 @@ class player {
             } break;
         }
         enemy.reset();
-
     }
 
     equip(invNum, equipNum) {
         if (this.moves >= 3) return [false, "used up all moves"];
-        if (equipNum > 6 && equipNum < 0 || typeof equipNum == 'undefined') return [false, "equipment # out of bounds"];
+        if (equipNum > 5 && equipNum < 0 || typeof equipNum == 'undefined') return [false, "items # out of bounds"];
         if (typeof this.inventory[invNum] !== 'undefined') {
-            if (this.equipment[equipNum] !== "")
-                this.inventory.push(this.equipment[equipNum])
-            this.equipment[equipNum] = this.inventory[invNum];
+            if (this.items[equipNum] !== "")
+                this.inventory.push(this.items[equipNum])
+            this.items[equipNum] = this.inventory[invNum];
             this.inventory.splice(invNum, 1);
-            switch (this.equipment[equipNum]) {
-                case "syringe": {
-                    this.multiplier += 0.1;
-                } break;
-            }
-            if (this.equipment[equipNum] == "syringe") {
-                this.multiplier += 0.1;
-            }
             this.moves += 1;
-            return true;
+            return [true, "SUCCESS"];
         }
         else {
             return [false, "inventory slot is undefined"];
@@ -79,16 +70,16 @@ class player {
     }
 
     unequip(equipNum) {
-        if (equipNum > 6 || equipNum < 0) return [false, "equipment # out of bounds"];
-        if (this.equipment[equipNum] !== "") {
-            this.inventory.push(this.equipment[equipNum]);
-            switch (this.equipment[equipNum]) {
+        if (equipNum > 6 || equipNum < 0) return [false, "items # out of bounds"];
+        if (this.items[equipNum] !== "") {
+            this.inventory.push(this.items[equipNum]);
+            switch (this.items[equipNum]) {
                 case "syringe": {
                     this.multiplier -= 0.1;
                 } break;
             }
-            this.equipment[equipNum] = "";
-            return true;
+            this.items[equipNum] = "";
+            return [true, "SUCCESS"];
         }
         else {
             return [false, "inventory slot is undefined"];
@@ -106,8 +97,8 @@ class player {
     getInventory() {
         return this.inventory;
     }
-    getEquipment() {
-        return this.equipment;
+    getItems() {
+        return this.items;
     }
     getMultiplier() {
         return this.multiplier;

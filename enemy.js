@@ -21,7 +21,7 @@ class enemy {
             } else if (rng > 0.4) {
                 this.name = "Goblin"
             } else if (rng > 0.2){
-                this.name = "Sidd"
+                this.name = "Fish"
             } else {
                 this.name = "Dog"
             }   

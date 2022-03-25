@@ -2,13 +2,10 @@
 <html>
   <head>
       
-    <script src="enemy.js"></script>
-    <script src="player.js"></script>
-    <script src="index.js"></script>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>GVSS ANIME GAME</title>
+    <title>GVSS COMP GAME!!!</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
@@ -22,7 +19,7 @@
         <a class="navbar-brand " href="#">Rulebook</a>
       </li>
       <li class="nav-item">
-        <a class="navbar-brand" href="#">Documentation</a>
+        <a class="navbar-brand" href="https://docs.google.com/document/d/1w63lPRad_8S7H_-T9bzW4ukUSzlVjFVBCuAS5sMwH6M/edit?usp=sharing" target="_blank">Documentation</a>
       </li>
     </nav>
 
@@ -32,23 +29,26 @@
         <h3 class="mx-1">Enemies</h3>
       </div>
       <div class="col">
-        <h4 class="mx-1 mb-1">*Enemy Name*</h4>
-        <h4 class="mx-1">*Enemy Health*</h4>
+        <h4 class="mx-1 mb-1" id="EnName_1">*Enemy Name*</h4>
+        <h4 class="mx-1" id="EnHealth_1">*Enemy Health*</h4>
       </div>
       <div class="col">
-        <h4 class="mx-1 mb-1">*Enemy Name*</h4>
-        <h4 class="mx-1">*Enemy Health*</h4>
+        <h4 class="mx-1 mb-1" id="EnName_2">*Enemy Name*</h4>
+        <h4 class="mx-1" id="EnHealth_2">*Enemy Health*</h4>
       </div>
     </div>
     <hr> 
     <div class="row justify-content-start"> 
         <div class="col-4">
             <h3 class="mt-1 text-decoration-underline">Statistics</h3>
-            <h4 class="mt-1"><b>Score:</b> <span id="score_id">*text*</span></h4>
             <h4 class="mt-1"> <b>Turns Passed:</b> <span id="turn_id">*text*</span></h4>
-            <h4 class="mt-1"><b>Moves Left:</b> <span id="move_id">*text*</span></h4>
-            <h4 class="mt-1"><b>AP:</b> <span id="ap_id">*text*</span></h4>
+           <h4 class="mt-1"><b>Moves Left:</b> <span id="move_id">*text*</span></h4>
+           <h4 class="mt-1"><b>AP:</b> <span id="ap_id">*text*</span></h4>
             <h4 class="mt-1"><b>Kills:</b> <span id="kill_id">*text*</span></h4>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="playerSelect">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Hiroyasu Mode</label> <!-- Make this work-->
+            </div>
             
            <!-- <div class="jumbotron bg-secondary">
               <h3 class="mt-5 text-decoration-underline">Log</h3>
@@ -57,25 +57,49 @@
         <div class="col-2">
           <h4 class="text-decoration-underline mb-3">Actions</h4>
           <div class="d-grid gap-2 my-auto">
-            <button type="button" class="btn btn-outline-secondary">Attack</button>
-            <button type="button" class="btn btn-outline-secondary">Spell 1</button>
-            <button type="button" class="btn btn-outline-secondary">Spell 2</button>
-            <button type="button" class="btn btn-outline-secondary">Spell 3</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="attack(1)">Attack</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="spell(0,1)">Spell 1</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="spell(0,2)">Spell 2</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="spell(0,3)">Spell 3</button>
           </div>
         </div>
 
         <div class="col-2 mx-auto">
           <h4 class="text-decoration-underline mb-3">Actions</h4>
           <div class="d-grid gap-2 my-auto">
-            <button type="button" class="btn btn-outline-secondary">Attack</button>
-            <button type="button" class="btn btn-outline-secondary">Spell 1</button>
-            <button type="button" class="btn btn-outline-secondary">Spell 2</button>
-            <button type="button" class="btn btn-outline-secondary">Spell 3</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="attack(2)">Attack</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="spell(1,1)">Spell 1</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="spell(1,2)">Spell 2</button>
+            <button type="button" class="btn btn-outline-secondary"onclick="spell(1,3)">Spell 3</button>
           </div>
         </div>
-
+        
       </div> 
     </div>
   </body>
+  <script src="enemy.js"></script>
+  <script src="player.js"></script>
+  <script src="index.js"></script>
+  <script>
+    const webGameObj = new game("shin", func);
+      window.addEventListener('Load', (event) => {
+        console.log("epic")
+        webGameObj.start()
+    });
+    
+    function attack(target){
+      console.log(`Attack: ${webGameObj.getPlayer().attack(webGameObj.getEnemies())}`)
+    }
+    function spell(target, type){
+      if(type != 1){
+        gameObj.getPlayer().castSpell(type, 25, gameObj.getEnemies())
+      }
+      else{
+        gameObj.getPlayer().castSpell(1, 25, gameObj.getEnemies()[target])
+      }
+    }
+
+    
+  </script>
 </html>
 

@@ -17,14 +17,15 @@ class player {
         this.moves = 0;
         this.points += 5;
 
-        if (typeof this.kills % 5 == 0) { //if divisible by 5
+        if (this.kills % 5 == 0) { //if divisible by 5
             for (let i = 0; i < this.items.length; i++) {
                 if (this.items[i] === "glass") {
                     this.multiplier += 0.25;
                 }
             }
-            //Im only putting this in here because bill told me to vvvv
-            if (typeof this.kills % 10 == 0) { //if divisible by 10 
+
+            //Im ony putting this in here because bill told me to vvvv
+            if (this.kills % 10 == 0) { //if divisible by 10 
                 for (let i = 0; i < this.items.length; i++) {
                     if (this.items[i] === "tooth") {
                         this.multiplier += 1;
@@ -32,9 +33,13 @@ class player {
                 }
             }
         }
-        if (this.items.includes('syringe')) {
-            this.multiplier += 0.1;
+
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i] == ('syringe')) {
+                this.multiplier += 0.1;
+            }
         }
+        this.multiplier = Math.round(gameObj.getPlayer().getMultiplier() * 10)/10;
     }
     onKill(enemy) {
         this.kills += 1;
@@ -116,6 +121,7 @@ class HiroyasuKayama extends player {
     }
     attack(enemy) { //Homing
         if (this.moves >= 3) return [false, "used up all moves"];
+        if (enemy.length != 2) return [false, "This attack deals damage to only 1 enemy"];
         if (enemy[0].damage(this.multiplier * 1000)) this.onKill(enemy[0]);
         this.points += 10;
         this.moves += 1;
@@ -178,7 +184,7 @@ class shinSuzuma extends player {
 
     attack(enemies) { //Illusion Beams
         if (this.moves >= 3) return [false, "used up all moves"];
-        if (enemies.length != 2) return [false, "This spell deals damage to only 2 enemies"];
+        if (enemies.length != 2) return [false, "This attack deals damage to only 2 enemies"];
         for (let i = 0; i < enemies.length; i++) {
             if (enemies[i].damage(this.multiplier * 500)) {
                 this.onKill(enemies[i]);
